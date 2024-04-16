@@ -4,10 +4,6 @@ import os
 import hasard
 import json
 import uuid
-from fpdf import FPDF
-
-
-
 
 class ToolBox():
     def __init__(self):
@@ -15,15 +11,25 @@ class ToolBox():
         self.API_KEY_SHODAN = shodan.Shodan(self.API_KEY)
         self.results = []
 
+#Fonction Menu
     def man(self):
         print(utils.Couleur.ORANGE + "******************************" + utils.Couleur.FIN + " Welcome Challenger " + utils.Couleur.ORANGE + "******************************" + utils.Couleur.FIN + "\n")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "1 - Scan de port par hôte")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "2 - Détection de vulnérabilités")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "3 - Tests d'authentification")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "4 - Exploitation de vulnéranilités")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "5 - Reporting")
+        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "1 - Scan hôte")
+        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "2 - Tests d'authentification")
+        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "3 - Exploitation de vulnéranilités")
+        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "4 - Reporting")
         print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "'info' - Information concernant l'utilisation de la Toolbox")
         print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "'quit' - pour quitter l'outil\n")
+
+    def manExploit(self):
+        print(utils.Couleur.ORANGE + "******************************" + utils.Couleur.FIN + " Welcome Challenger " + utils.Couleur.ORANGE + "******************************" + utils.Couleur.FIN + "\n")
+        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "1 - Scan hôte")
+        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "2 - Tests d'authentification")
+        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "3 - Exploitation de vulnéranilités")
+        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "4 - Reporting")
+        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "'info' - Information concernant l'utilisation de la Toolbox")
+        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "'quit' - pour quitter l'outil\n")
+
 
     def scanPort(self, IP_CIBLE):
         try:
@@ -99,66 +105,58 @@ class ToolBox():
             print("Aucune donnée disponible pour cette IP")
             return
 
-        # Début du document HTML avec des accolades doublées pour les styles CSS
         html_content = """
         <!DOCTYPE html>
         <html lang="en">
         <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Rapport de Scan</title>
-        <style>
-            table {{
-                width: 100%;
-                border-collapse: collapse;
-            }}
-            table, th, td {{
-                border: 1px solid black;
-            }}
-            th, td {{
-                padding: 5px;
-                text-align: left;
-            }}
-            th {{
-                background-color: #f2f2f2;
-            }}
-        </style>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Rapport de Scan</title>
+            <style>
+                table {{ width: 100%; border-collapse: collapse; }}
+                th, td {{ border: 1px solid black; padding: 5px; text-align: left; }}
+                th {{ background-color: #f2f2f2; }}
+            </style>
         </head>
         <body>
-        <h1>Rapport de Scan</h1>
-        <p><strong>IP:</strong> {ip}</p>
-        <p><strong>OS:</strong> {os}</p>
-        <p><strong>Organisation:</strong> {org}</p>
-        <table>
-            <tr>
-                <th>PORT</th>
-                <th>CVE</th>
-            </tr>
+            <h1>Rapport de Scan</h1>
+            <p><strong>IP:</strong> {ip}</p>
+            <p><strong>OS:</strong> {os}</p>
+            <p><strong>Organisation:</strong> {org}</p>
+            <table>
+                <tr>
+                    <th>PORT</th>
+                    <th>CVE</th>
+                </tr>
         """.format(ip=data['ip'], os=data.get('os', 'N/A'), org=data.get('org', 'N/A'))
 
-        # Ajouter les données du rapport
         for port in data['ports']:
-            cve_list = [cve for cve in port.get('cve_details', {}).keys() if cve.startswith('CVE-')]
-            cve_text = ', '.join(cve_list)
+            if isinstance(port, dict):
+                port_number = port['port']
+                cve_list = port.get('cve_details', {})
+                cve_text = ', '.join([f"{cve}: {desc['summary']}" for cve, desc in
+                                      cve_list.items()]) if cve_list else "No CVEs associated"
+            else:
+                port_number = port
+                cve_text = "No CVEs associated"
 
-            html_content += """
-            <tr>
-                <td>{port}</td>
-                <td>{cves}</td>
-            </tr>
-            """.format(port=port['port'], cves=cve_text)
+            html_content += f"""
+                <tr>
+                    <td>{port_number}</td>
+                    <td>{cve_text}</td>
+                </tr>
+            """
 
-        # Fin du document HTML
         html_content += """
-        </table>
+            </table>
         </body>
         </html>
         """
 
-        # Écrire le contenu HTML dans un fichier
         with open(output_filename, 'w') as file:
             file.write(html_content)
         print(f"Rapport HTML sauvegardé sous {output_filename}")
+
 
     def reporting(self):
         ip_address = input(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "Entrez l'adresse IP pour le rapport: ")
@@ -168,6 +166,8 @@ class ToolBox():
         else:
             print(utils.Couleur.ROUGE + "[!] " + utils.Couleur.FIN + "Aucune donnée trouvée pour cette adresse IP.")
 
+
+#Partie logique
     def main(self):
         hasard.hasardFunction.randomDesign(self)
         toolbox.man()
@@ -195,4 +195,3 @@ if __name__ == "__main__":
     toolbox.main()
     toolbox.save_results_to_json("shodan_results.json")
     print("Les résultats ont été sauvegardés dans shodan_results.json")
-
