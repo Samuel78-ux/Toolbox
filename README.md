@@ -1,5 +1,3 @@
-Voici un exemple de fichier README pour votre dépôt GitHub, présentant et récapitulant les fonctionnalités de votre toolbox :
-
 ---
 
 # ToolBox
