@@ -2,7 +2,7 @@
 
 # ToolBox
 
-ToolBox is a comprehensive cybersecurity toolkit designed to perform various network security tasks. This includes host scanning, exploit searching, authentication testing, vulnerability exploitation, and detailed reporting. ToolBox leverages powerful tools like Shodan, Nmap, and custom scripts to provide a wide range of functionalities.
+ToolBox is a comprehensive cybersecurity toolkit designed to perform various network security tasks. This includes host scanning, exploit searching, authentication testing, vulnerability exploitation, and detailed reporting. ToolBox leverages powerful tools like Shodan, Nmap, and custom scripts to provide a wide range of functionalities. (Windows only)
 
 ## Features
 
@@ -27,9 +27,9 @@ Test the authentication mechanisms of a target host.
 ### 5. Vulnerability Exploitation
 Execute various exploits against target hosts.
 
-- **Shellcode Execution**
-- **Reverse TCP**
-- **Listener Setup**
+- **Shellcode Execution** : Send shellcode to a vulnerable remote host
+- **Reverse TCP** create a remote reverse shell on a vulnerable host
+- **Listener Setup** listens for any connection on the attacking machine coming from a reverse shell
 
 ### 6. Reporting
 Generate detailed HTML reports based on scan results from Shodan and Nmap.
@@ -91,7 +91,6 @@ Scan the local network for active hosts.
 ### Authentication Testing Menu
 - **1. Brute Force SSH**: Perform a brute force attack on an SSH service.
 - **2. Ftp Anonymous**: Test for anonymous login on an FTP server.
-- **3. Auth_Z**: Placeholder for additional authentication tests.
 - **0. Back to Main Menu**: Return to the main menu.
 
 ## Contributing
