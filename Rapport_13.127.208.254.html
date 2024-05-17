@@ -2,48 +2,174 @@
         <!DOCTYPE html>
         <html lang="en">
         <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Rapport de Scan</title>
-        <style>
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            table, th, td {
-                border: 1px solid black;
-            }
-            th, td {
-                padding: 5px;
-                text-align: left;
-            }
-            th {
-                background-color: #f2f2f2;
-            }
-        </style>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Security Scan Report</title>
+            <style>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    margin: 40px;
+                    color: #333;
+                    background: #f4f4f9;
+                }
+                .container {
+                    max-width: 800px;
+                    margin: auto;
+                    padding: 20px;
+                    background: #fff;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+                h1, h2 {
+                    color: #0056b3;
+                    text-align: center;
+                }
+                .summary {
+                    margin-top: 20px;
+                    font-size: 1.2em;
+                    line-height: 1.4;
+                }
+                .summary strong {
+                    color: #0056b3;
+                }
+                table {
+                    width: 100%;
+                    margin-top: 20px;
+                    border-collapse: collapse;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+                th, td {
+                    padding: 12px 15px;
+                    border: 1px solid #ddd;
+                    text-align: left;
+                }
+                th {
+                    background-color: #007bff;
+                    color: #ffffff;
+                }
+                tr:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+                .cve-links a {
+                    color: #d9534f;
+                    text-decoration: none;
+                }
+            </style>
         </head>
         <body>
-        <h1>Rapport de Scan</h1>
-        <p><strong>IP:</strong> 13.127.208.254</p>
-        <p><strong>OS:</strong> None</p>
-        <p><strong>Organisation:</strong> Amazon Data Services India</p>
-        <table>
-            <tr>
-                <th>PORT</th>
-                <th>CVE</th>
-            </tr>
+            <div class="container">
+                <h1>TOOL BOX REPORT</h1>
+                <h2>IP Address: 13.127.208.254</h2>
+                <div class="summary">
+                    <p><strong>Location:</strong> Unknown</p>
+                    <p><strong>Date:</strong> Unknown</p>
+                </div>
+
+                <h2>PORTS</h2>
+                <table>
+                    <tr>
+                        <th>PORT</th>
+                        <th>SERVICE</th>
+                        <th>VERSION</th>
+                        <th>STATUS</th>
+                    </tr>
         
-            <tr>
-                <td>22</td>
-                <td>CVE-2016-20012, CVE-2021-36368, CVE-2023-51767, CVE-2023-48795, CVE-2023-38408, CVE-2007-2768, CVE-2021-41617, CVE-2023-51384, CVE-2023-51385, CVE-2008-3844</td>
-            </tr>
-            
-            <tr>
-                <td>80</td>
-                <td></td>
-            </tr>
-            
-        </table>
+                    <tr>
+                        <td>22</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>open</td>
+                    </tr>
+                
+                    <tr>
+                        <td>80</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>open</td>
+                    </tr>
+                
+                </table>
+
+                <h2>CVEs</h2>
+                <table>
+                    <tr>
+                        <th>CVE</th>
+                        <th>LINK</th>
+                        <th>IMPACT</th>
+                        <th>EXPLOIT</th>
+                    </tr>
+        
+                        <tr>
+                            <td>CVE-2016-20012</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                            <td>N/A</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                        </tr>
+                    
+                        <tr>
+                            <td>CVE-2021-36368</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                            <td>N/A</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                        </tr>
+                    
+                        <tr>
+                            <td>CVE-2023-51767</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                            <td>N/A</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                        </tr>
+                    
+                        <tr>
+                            <td>CVE-2023-48795</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                            <td>N/A</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                        </tr>
+                    
+                        <tr>
+                            <td>CVE-2023-38408</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                            <td>N/A</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                        </tr>
+                    
+                        <tr>
+                            <td>CVE-2007-2768</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                            <td>N/A</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                        </tr>
+                    
+                        <tr>
+                            <td>CVE-2021-41617</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                            <td>N/A</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                        </tr>
+                    
+                        <tr>
+                            <td>CVE-2023-51384</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                            <td>N/A</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                        </tr>
+                    
+                        <tr>
+                            <td>CVE-2023-51385</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                            <td>N/A</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                        </tr>
+                    
+                        <tr>
+                            <td>CVE-2008-3844</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                            <td>N/A</td>
+                            <td class="cve-links"><a href="N/A">N/A</a></td>
+                        </tr>
+                    
+                </table>
+            </div>
         </body>
         </html>
         
